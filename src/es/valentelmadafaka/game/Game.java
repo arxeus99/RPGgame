@@ -10,6 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JPanel;
 
+import es.valentelmadafaka.models.Map;
 import es.valentelmadafaka.utils.Functions;
 
 import java.awt.Color;
@@ -50,8 +51,6 @@ public class Game {
 	 */
 	private void initialize() {
 		
-		JButton[][] buttons = new JButton[10][10];
-		
 		
 		frame = new JFrame();
 		frame.setBounds(new Rectangle(0, 0, 520, 550));
@@ -61,11 +60,13 @@ public class Game {
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		Functions.crearTablero(panel,buttons,10,50);
-		buttons[0][0].setIcon(new ImageIcon(Game.class.getResource("../icons/chOne.jpg")));
-		buttons[0][0].setName("ch1");
-		buttons[9][9].setIcon(new ImageIcon(Game.class.getResource("../icons/chTwo.jpg")));
-		buttons[9][9].setName("ch2");
+		Map m = new Map(20,25);
+		m.crearTablero(panel);
+		m.getButtons()[0][0].setIcon(new ImageIcon(Game.class.getResource("../icons/chOne.jpg")));
+		m.getButtons()[0][0].setName("ch1");
+		m.getButtons()[m.getButtons().length-1][m.getButtons().length-1].setIcon(new ImageIcon(Game.class.getResource("../icons/chTwo.jpg")));
+		m.getButtons()[m.getButtons().length-1][m.getButtons().length-1].setName("ch2");
+		
 		
 		
 	}
