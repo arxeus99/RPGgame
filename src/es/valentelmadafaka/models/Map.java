@@ -1,6 +1,7 @@
 package es.valentelmadafaka.models;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -13,45 +14,55 @@ import es.valentelmadafaka.utils.Functions;
 
 public class Map {
 
-	public int size;
+	private int x;
 	
-	public int amount;
+	private int y;
 	
-	public JButton[][] buttons;
+	private JButton[][] buttons;
+	
+	private JPanel panel;
+	
+	private int sizeX;
+	
+	private int sizeY;
 
-	public Map(int size, int amount) {
+	public Map(int x, int y, JPanel panel) {
 		super();
-		this.size = size;
-		this.amount = amount;
-		this.buttons = new JButton[amount][amount];
+		this.x = x;
+		this.y = y;
+		this.panel = panel;
+		this.buttons = new JButton[x][y];
+		Dimension d = panel.getSize();
+		sizeY = d.height/y;
+		sizeX = d.width/x;
 	}
 	
-	public void crearTablero(JPanel p) {
-		for(int c= 0; c<amount; c++) {
-			for(int r = 0; r<amount; r++) {
+	public void crearTablero() {
+		for(int c= 0; c<x; c++) {
+			for(int r = 0; r<y; r++) {
 				JButton b = new JButton();
-				b.setBounds(size*c,size*r,size,size);
+				b.setBounds(sizeX*c,sizeY*r,sizeX,sizeY);
 				b.setName("vacio");
 				b.setBackground(Color.GREEN);
-				p.add(b);
+				panel.add(b);
 				buttons[c][r]=b;
 				b.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						Functions.seleccionar(b, buttons, amount, size);
+						seleccionar(b, buttons, x, y, sizeX, sizeY);
 					}
 				});
 			}
 		}
 	}
 	
-	public void seleccionar(JButton b, JButton[][] c, int cantidad, int tamaño) {
+	private void seleccionar(JButton b, JButton[][] c, int x, int y, int sizeX, int sizeY) {
 		
 		boolean encontrado = false;
 		if(b.getName().equals("ch1") || b.getName().equals("ch2")) {
-			for(int i=0; i<cantidad; i++) {
-				for(int e=0; e<cantidad; e++) {
-					if(c[e][i].getName().equals("seleccionado1") || c[e][i].getName().equals("seleccionado2")) {
+			for(int i=0; i<x; i++) {
+				for(int e=0; e<y; e++) {
+					if(c[i][e].getName().equals("seleccionado1") || c[i][e].getName().equals("seleccionado2")) {
 						encontrado = true;
 					}
 				}
@@ -76,67 +87,29 @@ public class Map {
 				b.setIcon(new ImageIcon(Game.class.getResource("../icons/chTwo.jpg")));
 			}
 			if(b.getName().equals("vacio")) {
-				for(int i=0; i<cantidad; i++) {
-					for(int e=0; e<cantidad; e++) {
-						if(c[e][i].getName().equals("seleccionado1")) {
-							//if(!m.comer(c[e][i], c)) {
-								if(b.getX()==c[e][i].getX()+tamaño || b.getY() == c[e][i].getY()+tamaño || b.getX()==c[e][i].getX()-tamaño || b.getY() == c[e][i].getY()-tamaño ) {
+				for(int i=0; i<x; i++) {
+					for(int e=0; e<y; e++) {
+						if(c[i][e].getName().equals("seleccionado1")) {
+							//if(!m.comer(c[i][e], c)) {
+								if(b.getX()==c[i][e].getX()+sizeX || b.getY() == c[i][e].getY()+sizeY || b.getX()==c[i][e].getX()-sizeX || b.getY() == c[i][e].getY()-sizeY ) {
 									b.setIcon(new ImageIcon(Game.class.getResource("../icons/chOne.jpg")));
 									b.setName("ch1");
-									c[e][i].setIcon(null);
-									c[e][i].setName("vacio");
-								}
-							/*}else {
-								if(b.getX()==c[e][i].getX()+80 & b.getY() == c[e][i].getY()+80) {
-									for(int j=0; j<4; j++) {
-										for(int s=0; s<8; s++) {
-											if(c[s][j].getName().equals("blanca") & c[s][j].getX() == c[e][i].getX()+40 & c[s][j].getY() == c[e][i].getY()+40) {
-												c[s][j].setName("vacia");
-												c[s][j].setIcon(null);
-												b.setIcon(new ImageIcon(Main.class.getResource("/iconos/negra.png")));
-												b.setName("negra");
-												if(!m.comer(b, c)) {
-													m.setTurno("blancas");
-												}
-												c[e][i].setIcon(null);
-												c[e][i].setName("vacia");
-												m.setPuntos2(m.getPuntos2()+2);
-											}
-										}
-									}
-								}
-								if(b.getX()==c[e][i].getX()-80 & b.getY() == c[e][i].getY()+80) {
-									for(int j=0; j<4; j++) {
-										for(int s=0; s<8; s++) {
-											if(c[s][j].getName().equals("blanca") & c[s][j].getX() == c[e][i].getX()-40 & c[s][j].getY() == c[e][i].getY()+40) {
-												c[s][j].setName("vacia");
-												c[s][j].setIcon(null);
-												b.setIcon(new ImageIcon(Main.class.getResource("/iconos/negra.png")));
-												b.setName("negra");
-												if(!m.comer(b, c)) {
-													m.setTurno("blancas");
-												}
-												c[e][i].setIcon(null);
-												c[e][i].setName("vacia");
-												m.setPuntos2(m.getPuntos2()+2);
-											}
-										}
-									}
-								}
-							}*/
+									c[i][e].setIcon(null);
+									c[i][e].setName("vacio");
+							}
 						}
-						if(c[e][i].getName().equals("seleccionado2")) {
-							if(b.getX()==c[e][i].getX()+tamaño || b.getY() == c[e][i].getY()-tamaño || b.getX()==c[e][i].getX()-tamaño || b.getY() == c[e][i].getY()+tamaño) {
+						if(c[i][e].getName().equals("seleccionado2")) {
+							if(b.getX()==c[i][e].getX()+sizeX || b.getY() == c[i][e].getY()-sizeY || b.getX()==c[i][e].getX()-sizeX || b.getY() == c[i][e].getY()+sizeY) {
 								b.setIcon(new ImageIcon(Game.class.getResource("../icons/chTwo.jpg")));
 								b.setName("ch2");
-								c[e][i].setIcon(null);
-								c[e][i].setName("vacio");
+								c[i][e].setIcon(null);
+								c[i][e].setName("vacio");
 							}
 							/*else {
-								if(b.getX()==c[e][i].getX()+80 & b.getY() == c[e][i].getY()-80) {
+								if(b.getX()==c[i][e].getX()+80 & b.getY() == c[i][e].getY()-80) {
 									for(int j=0; j<4; j++) {
 										for(int s=0; s<8; s++) {
-											if(c[s][j].getName().equals("negra") & c[s][j].getX() == c[e][i].getX()+40 & c[s][j].getY() == c[e][i].getY()-40) {
+											if(c[s][j].getName().equals("negra") & c[s][j].getX() == c[i][e].getX()+40 & c[s][j].getY() == c[i][e].getY()-40) {
 												c[s][j].setName("vacia");
 												c[s][j].setIcon(null);
 												b.setIcon(new ImageIcon(Main.class.getResource("/iconos/blanca.png")));
@@ -144,17 +117,17 @@ public class Map {
 												if(!m.comer(b, c)) {
 													m.setTurno("negras");
 												}
-												c[e][i].setIcon(null);
-												c[e][i].setName("vacia");
+												c[i][e].setIcon(null);
+												c[i][e].setName("vacia");
 												m.setPuntos1(m.getPuntos1()+2);
 											}
 										}
 									}
-								}
-								if(b.getX()==c[e][i].getX()-80 & b.getY() == c[e][i].getY()-80) {
+								}*/
+								/*if(b.getX()==c[i][e].getX()-80 & b.getY() == c[i][e].getY()-80) {
 									for(int j=0; j<4; j++) {
 										for(int s=0; s<8; s++) {
-											if(c[s][j].getName().equals("negra") & c[s][j].getX() == c[e][i].getX()-40 & c[s][j].getY() == c[e][i].getY()-40) {
+											if(c[s][j].getName().equals("negra") & c[s][j].getX() == c[i][e].getX()-40 & c[s][j].getY() == c[i][e].getY()-40) {
 												c[s][j].setName("vacia");
 												c[s][j].setIcon(null);
 												b.setIcon(new ImageIcon(Main.class.getResource("/iconos/blanca.png")));
@@ -162,22 +135,21 @@ public class Map {
 												if(!m.comer(b, c)) {
 													m.setTurno("negras");
 												}
-												c[e][i].setIcon(null);
-												c[e][i].setName("vacia");
+												c[i][e].setIcon(null);
+												c[i][e].setName("vacia");
 												m.setPuntos1(m.getPuntos1()+2);
 											}
 										}
 									}
-								}
-							}*/
+								}*/
+							}
 						}
 					}
 				}
 			}
 		}
-	}
 
-	public int getSize() {
+	/*public int getSize() {
 		return size;
 	}
 
@@ -191,7 +163,7 @@ public class Map {
 
 	public void setAmount(int amount) {
 		this.amount = amount;
-	}
+	}*/
 
 	public JButton[][] getButtons() {
 		return buttons;
